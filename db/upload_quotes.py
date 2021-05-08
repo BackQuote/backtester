@@ -8,23 +8,26 @@ sys.path.append(current_dir + '/../server')
 from models import Ticker, Day
 
 ultimate_dir = current_dir + '/../backtester/backtester/ultimate_files'
-engine = create_engine(os.environ['DATABASE_URL'], echo=True)
+engine = create_engine("postgresql://postgres:docker@localhost:5432/backtester", echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
 quotes_file = open('quotes', 'w')
 days_uploaded = False
 
+print('ultimate dir: ' + ultimate_dir)
 for ultimate in os.listdir(ultimate_dir):
+    ultimate_file_path = os.path.join(ultimate_dir, ultimate)
+    if not os.path.isfile(ultimate_file_path):
+        continue
     ticker_name = ultimate[:-4]
     ticker = Ticker(ticker_name)
     session.add(ticker)
     session.commit()
 
-    ultimate_file = open(os.path.join(ultimate_dir, ultimate))
     day = None
     date = None
     day_id = 0
-
+    ultimate_file = open(ultimate_file_path)
     for line in ultimate_file:
         if 'new day' in line:
             dinfo = line.split()

@@ -13,10 +13,12 @@ The goal of this project is to develop a performant, reliable infrastructure to 
 Setup python environment and install dependencies:
 
 ```
-virtualenv venv
+mkdir -p $HOME/docker/volumes/postgres
+sudo apt-get install libpq-dev
+sudo apt install postgresql-client-12
 
+virtualenv -p /usr/bin/python3.8 venv
 source venv/bin/activate
-
 pip install -r requirements.txt
 ```
 

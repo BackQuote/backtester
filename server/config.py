@@ -12,4 +12,5 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URL"]
+    DATABASE_URL = "postgresql://postgres:docker@localhost:5432/backtester"
+    SQLALCHEMY_DATABASE_URI = DATABASE_URL

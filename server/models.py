@@ -4,8 +4,8 @@ import json
 ###
 # Utility functions
 ###
-def decimal(decimal):
-    return round(decimal, 2)
+def round_num(num):
+    return round(float(num), 2)
 
 
 def serialize(list):
@@ -91,9 +91,9 @@ class Trade(db.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'price': decimal(self.price),
-            'quantityReset': decimal(self.quantity_reset),
-            'quantityNoReset': decimal(self.quantity_no_reset),
+            'price': round_num(self.price),
+            'quantityReset': round_num(self.quantity_reset),
+            'quantityNoReset': round_num(self.quantity_no_reset),
             'action': self.action,
             'timestamp': str(self.timestamp),
             'resultId': self.result_id
@@ -127,10 +127,10 @@ class Quote(db.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'open': decimal(self.open),
-            'close': decimal(self.close),
-            'high': decimal(self.high),
-            'low': decimal(self.low),
+            'open': round_num(self.open),
+            'close': round_num(self.close),
+            'high': round_num(self.high),
+            'low': round_num(self.low),
             'lastOfDay': self.last_of_day,
             'timestamp': str(self.timestamp),
             'dayId': self.day_id,
@@ -164,10 +164,10 @@ class Result(db.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'dailyProfitReset': decimal(self.daily_profit_reset),
-            'dailyProfitNoReset': decimal(self.daily_profit_no_reset),
-            'cumulativeProfitReset': decimal(self.cumulative_profit_reset),
-            'cumulativeProfitNoReset': decimal(self.cumulative_profit_no_reset),
+            'dailyProfitReset': round_num(self.daily_profit_reset),
+            'dailyProfitNoReset': round_num(self.daily_profit_no_reset),
+            'cumulativeProfitReset': round_num(self.cumulative_profit_reset),
+            'cumulativeProfitNoReset': round_num(self.cumulative_profit_no_reset),
             'dayId': self.day_id,
             'simulationId': self.simulation_id,
             'date': self.date
@@ -229,13 +229,13 @@ class Simulation(db.Model):
         return {
             'id': self.id,
             'params': json.loads(self.params),
-            'profitNoReset': decimal(self.profit_no_reset),
-            'profitRateNoReset': decimal(self.profit_rate_no_reset),
-            'profitReset': decimal(self.profit_reset),
-            'profitRateReset': decimal(self.profit_rate_reset),
-            'profitNoTrading': decimal(self.profit_no_trading),
-            'profitRateNoTrading': decimal(self.profit_rate_no_trading),
-            'walletNeededForReset': decimal(self.wallet_needed_for_reset),
+            'profitNoReset': round_num(self.profit_no_reset),
+            'profitRateNoReset': round_num(self.profit_rate_no_reset),
+            'profitReset': round_num(self.profit_reset),
+            'profitRateReset': round_num(self.profit_rate_reset),
+            'profitNoTrading': round_num(self.profit_no_trading),
+            'profitRateNoTrading': round_num(self.profit_rate_no_trading),
+            'walletNeededForReset': round_num(self.wallet_needed_for_reset),
             'backtestId': self.backtest_id,
             'ticker': self.ticker
         }
@@ -272,7 +272,7 @@ class Backtest(db.Model):
             'params': json.loads(self.params),
             'timestamp': str(self.timestamp),
             'success': self.success,
-            'executionTime': decimal(self.execution_time),
+            'executionTime': round_num(self.execution_time),
             'algorithmId': self.algorithm_id,
             'tickers': ', '.join([i.ticker for i in self.tickers]),
             'simulation_count': self.simulation_count,

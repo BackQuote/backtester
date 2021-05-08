@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO, emit
 from sqlalchemy.orm import lazyload
 from flask_cors import CORS
-from Queue import Queue
+from queue import Queue
 from upload import *
 import os, json, subprocess, time
 
@@ -15,12 +15,12 @@ completed_executions = []
 pending_executions = []
 
 app = Flask(__name__)
-app.config.from_object(os.environ['APP_SETTINGS'])
+app.config.from_object('config.DevelopmentConfig')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 CORS(app)
 
 db = SQLAlchemy(app)
-socketio = SocketIO(app, async_mode=async_mode)
+socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
 
 executing = False
 backtest_queue = Queue()
@@ -176,11 +176,11 @@ def execute_backtest():
     algorithm = Algorithm.query.get(backtest.algorithm_id)
     tickers = [i.ticker for i in backtest.tickers]
 
-    exe = os.path.dirname(os.path.abspath(__file__)) + '/../backtester/backtester/backtester.exe'
+    exe = os.path.dirname(os.path.abspath(__file__)) + '/../backtester/backtester/backtester'
     proc = subprocess.Popen([exe, '--algoName', algorithm.name, '--params', backtest.params, '--tickers'] +
-                            tickers, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                            tickers, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=None)
 
-    number_of_simulations = proc.stdout.readline().rstrip('\r\n')
+    number_of_simulations = proc.stdout.readline().decode().rstrip('\r\n')
     current_execution["number_of_simulations"] = number_of_simulations
     avg_time = 0
     socketio.start_background_task(target=emit_executions)
@@ -188,7 +188,7 @@ def execute_backtest():
     while True:
         if simulation_count == 1:
             start_time = time.time()
-        line = proc.stdout.readline().rstrip('\r\n')
+        line = proc.stdout.readline().decode().rstrip('\r\n')
         if line == 'Backtester done.':
             break
         simulation_results = json.loads(line)
@@ -206,7 +206,7 @@ def execute_backtest():
         current_execution["current_simulation"] = simulation_count
         socketio.start_background_task(target=emit_executions)
 
-    execution_time = proc.stdout.readline().rstrip('\r\n').split()[-1]
+    execution_time = proc.stdout.readline().decode().rstrip('\r\n').split()[-1]
     current_execution["eta"] = None
     current_execution["execution_time"] = execution_time
     socketio.start_background_task(target=emit_executions)

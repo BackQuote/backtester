@@ -30,14 +30,14 @@
     "react-hot-loader": "^3.0.0-beta.2",
     "react-notification-system": "^0.2.13",
     "react-notification-system-redux": "^1.0.11",
-    "react-redux": "^4.4.5",
+    "react-redux": "^5.0.2",
     "react-redux-loading-bar": "^2.7.4",
     "react-router": "^2.4.0",
     "react-router-redux": "^4.0.4",
     "react-select": "^1.0.0-rc.3",
     "react-table": "^5.5.0",
     "redux": "^3.5.2",
-    "socket.io-client": "^1.7.3"
+    "socket.io-client": "^4.0.2"
   },
   "devDependencies": {
     "amcharts3": "github:amcharts/amcharts3",
